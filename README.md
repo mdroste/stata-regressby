@@ -52,9 +52,9 @@ Todo
 
 The following items will be addressed soon:
 
-[ ] Finish off this readme.md
-[ ] Provide a help file
-[ ] Finish benchmarking and provide a script to validate results
+- [ ] Finish off this readme.md
+- [ ] Provide a help file
+- [ ] Finish benchmarking and provide a script to validate results
 
 A port of this program in C would yield a significant increase in performance; I have no plans to do that in the near future.
 
