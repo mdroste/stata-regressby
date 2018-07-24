@@ -41,11 +41,11 @@ net install regressby, from(`github'/mdroste/stata-regressby/master/)
 Motivating Example
 ---------------------------------
 
-It is easiest to describe how regressby functions by way of example. Suppose you want to estimate a regression describing the relationship between a person's income, y, and their parent's income, x. Also suppose that you have a variable g that describes each person's place of birth (say, each value of g represents a county in the United States), and you would like to run this regression separately for each county in the United States (as in Chetty and Hendren, 2014). 
+It is easiest to describe how regressby functions by way of example. Suppose you want to estimate a regression describing the relationship between a person's income, y, and their parent's income, x. Also suppose that you have a variable g that describes each person's place of birth (say, each value of g represents a county in the United States), and you would like to obtain slopes and intercepts separately for each county in the United States (as in Chetty and Hendren, 2014). 
 
-You can accomplish this in one step by regressing y on a vector of dummy variables for each distinct value of g and a vector of interactions between these dummies and x. This is convenient, but potentially undesirable for a few reasons. For one, Stata isn't going to allow you to include more than 10,998 independent variables in your regression, so if you are interested in estimating group-specific slopes and intercepts, then you can only do this with fewer than 5,500 groups. Second, it turns out that directly estimating thousands of parameters in an OLS regression simultaneously is quite slow in Stata.
+You can accomplish this in one step by regressing y on a vector of dummy variables for each distinct value of g and a vector of interactions between these dummies and x. This is convenient, but potentially undesirable for a few reasons. For one, Stata isn't going to allow you to include more than 10,998 independent variables in your regression, so if you are interested in estimating group-specific slopes and intercepts, then you can only do this with fewer than 5,500 groups. Because there are only about 3,000 counties in the United States, it is feasible to perform this one-step estimation in Stata. However, it turns out that directly estimating thousands of parameters in an OLS regression simultaneously is quite slow in Stata.
 
-An alternative strategy - and the only one that is feasible in this context when you have tens of thousands of distinct groups - is to estimate a separate regression of y on x for each distinct value of g. There are at least two easy ways to do this in Stata, either by manually iterating over values of groups or by using the built-in -statsby- function. However, both of these methods are also excruciatingly slow. Although it is very hard to beat Stata's built-in -regress- performance for a single regression, it can be very inefficient when running many identical regressions on subsets of your data.
+An alternative estimatin strategy - and the only one that is feasible in a context where you have tens of thousands of distinct groups - is to estimate a separate regression of y on x for each distinct value of g. There are at least two easy ways to do this in Stata, either by manually iterating over values of groups or by using the built-in -statsby- function. However, both of these methods are also excruciatingly slow. Although it is very hard to beat Stata's built-in -regress- performance for a single regression, it can be very inefficient when running many identical regressions on subsets of your data.
 
 The following two commands are equivalent:
 
@@ -59,7 +59,8 @@ statsby, by(byvars) clear: reg y x
 Benchmarks
 ---------------------------------
 
-Coming soon!
+
+![regressby benchmark](benchmarks/regressby_benchmark.png "regressby benchmark")
   
 Todo
 ---------------------------------
