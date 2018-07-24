@@ -39,7 +39,15 @@ net install regressby, from(`github'/mdroste/stata-regressby/master/)
 Usage
 ---------------------------------
 
-Coming soon!
+Concretely, consider an example where you have some variable y, x, and g. You want to regress y on x within each group indexed by a variable g.
+
+The following two commands are equivalent:
+
+``` 
+regressby y x, by(byvars)
+statsby, by(byvars) clear: reg y x	
+```
+
 
 
 Benchmarks

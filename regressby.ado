@@ -2,13 +2,13 @@
 * PROGRAM: regressby.ado
 * PURPOSE: Performs fast grouped univariate OLS regressions.
 *          The following commands are equivalent:
-*			 regressby3 y x, by(byvars)
+*			 regressby y x, by(byvars)
 *			 statsby, by(byvars) clear: reg y x	
 *		   Except regressby will run 10-100x faster.
 *          Also computes standard errors in a variety of flavors: usual
 *          asymptotic standard errors, robust standard errors, and clustered
 *          standard errors.
-* AUTHORS: MS and MD, 2014 and 2017
+* AUTHORS: Michael Stepner, Michael Droste, Wilbur Townsend
 *===============================================================================
 
 
@@ -16,7 +16,7 @@
 * Stata wrapper
 *-------------------------------------------------------------------------------
 
-program define regressby3
+program define regressby
 
 	version 13.1
 	syntax varlist(min=1 max=2 numeric), by(varlist) [ clusterby(varname) robust weightby(varname)] 
@@ -28,7 +28,7 @@ program define regressby3
 		exit
 	}
 	
-	* Display type of standard error
+	* Display type of standard error chosen
 	if "`robust'"=="" & "`clusterby'"=="" {
 		di "Running regressby with normal OLS standard errors."
 	}
@@ -77,7 +77,7 @@ program define regressby3
 	}
 	
 	* Perform regressions on each by-group, store in dataset
-	mata: _regressby3("`varlist'", "`grp'", "`bynumeric'","`clusterby'","`robust'","`weightby'")
+	mata: _regressby("`varlist'", "`grp'", "`bynumeric'","`clusterby'","`robust'","`weightby'")
 	
 	* Convert string by-vars back to strings, from numeric
 	foreach var in `bystr' {
@@ -102,7 +102,7 @@ version 13.1
 set matastrict on
 
 mata:
-void _regressby3(string scalar regvars, string scalar grpvar, string scalar byvars, string scalar clusterby, string scalar robust, string scalar weightby) {
+void _regressby(string scalar regvars, string scalar grpvar, string scalar byvars, string scalar clusterby, string scalar robust, string scalar weightby) {
 
 // Convert variable names to column indices
 real rowvector regcols, bycols, clustercol, weightcol
@@ -132,6 +132,10 @@ real matrix XX, Xy, XX_inv, V, Z, M, y, x, w
 real scalar N, k, cov, p, nc
 real vector beta, e, s2, cvar, xi, ei
 
+// -----------------------------------------------------------------------------
+// Iterate over groups
+// -----------------------------------------------------------------------------
+
 // Iterate over groups 1 to Ng-1
 for (obs=1; obs<=st_nobs()-1; obs++) {
 	if (_st_data(obs,grpcol)!=curgrp) {
@@ -151,42 +155,33 @@ for (obs=1; obs<=st_nobs()-1; obs++) {
 		XX 		= quadcross(X,X)
 		Xy 		= quadcross(X,y)
 		XX_inv 	= invsym(XX)
+		// ------------ COMPUTE COEFFICIENTS --------------------
 		beta 	= (XX_inv*Xy)'
         e 		= y - X*beta'
 		p    	= cols(X)
 		k    	= p - diag0cnt(XX_inv)
-		// USUAL OLS STANDARD ERRORS
+		// ------------ COMPUTE STANDARD ERRORS -----------------
 		if (robust == "" & clusterby=="") {
 			V 	= quadcross(e,e)/(N-k)*cholinv(XX)
 		}
-		// ROBUST STANDARD ERRORS
 		if (robust != "") {
 			V   = (N/(N-k))*XX_inv*quadcross(X, e:^2, X)*XX_inv
 		}
-		// XX CLUSTERED STANDARD ERRORS
 		if (clusterby != "") {
 			st_view(cvar,(startobs,obs-1),clustercol,0)
 			info = panelsetup(cvar, 1)
-			//info
 			nc  = rows(info)
 			Z   = J(k, k, 0)
 			if (nc>2) {
 				for (i=1; i<=nc; i++) {
 					xi = panelsubmatrix(X,i,info)
 					ei = panelsubmatrix(e,i,info)
-					//display("making z")
-					//rows(xi),cols(xi),rows(ei),cols(ei)
-					//xi
-					//ei
-					//rows(Z),cols(Z), rows(xi'*(ei*ei')*xi), cols(xi'*(ei*ei')*xi)
 					Z  = Z + xi'*(ei*ei')*xi
-					//Z
-					//display("made z")
 				}
 				V   = ((N-1)/(N-k))*(nc/(nc-1))*XX_inv*Z*XX_inv
 			}
 		}
-		// STORE REGRESSION OUTPUT
+		// ------------ STORE OUTPUT ----------------------------
 		coefs[curgrp,.] 	= beta
 		ses[curgrp,1] 		= (sqrt(V[1,1]))
 		if (cols(regcols)>1) {
@@ -195,13 +190,13 @@ for (obs=1; obs<=st_nobs()-1; obs++) {
 		}	
 		nobs[curgrp,1]  	= N
 		groups[curgrp,.] 	= st_data(startobs,bycols)
-		// update counters
+		// ------------ WRAP UP BY ITERATING COUNTERS -----------
 		curgrp	 = _st_data(obs,grpcol)
 		startobs = obs
 	}
 }
 
-// Always perform regression for last group
+// Iterate over last group manually
 obs=st_nobs()
 if (_st_data(obs,grpcol)==curgrp) {  // last observation is not a group to itself
 	// increment obs, since code is written as processing the observation that is 1 past the last in the group
@@ -266,6 +261,10 @@ else {
 	display("{error} last observation is in a singleton group")
 	exit(2001)
 }
+
+// -----------------------------------------------------------------------------
+// Gather output and pass back into Stata
+// -----------------------------------------------------------------------------
 
 // Store group identifiers in dataset
 stata("qui keep in 1/"+strofreal(numgrp))
