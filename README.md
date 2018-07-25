@@ -27,13 +27,13 @@ regressby supports a number of useful bells and whistles: subsetting with if/in,
 Motivation
 ---------------------------------
 
-It is easiest to describe how regressby functions by way of example. Suppose you want to estimate a regression describing the relationship between a person's income, y, and their parent's income, x. Also suppose that you have a variable g that describes each person's place of birth (say, each value of g represents a county in the United States), and you would like to obtain slopes and intercepts separately for each county in the United States (as in Chetty and Hendren, 2014). 
+It is easiest to explain how regressby functions by way of example. Suppose you want to estimate a regression describing how the relationship between a person's income (y) and their parent's income (x) varies across place of birth (g).
 
-You can accomplish this in one step by regressing y on a vector of dummy variables for each distinct value of g and a vector of interactions between these dummies and x. This approach is convenient, but suffers from a number of drawacks. Most importantly, Stata does not allow the direct estimation of more than 10,998 parameters simultaneously, which in this case means that this one-step estimator can only be computed when there are fewer than 5,500 groups. Second, it turns out that directly estimating thousands of parameters is quite slow.
+You can accomplish this in one step by regressing y on a vector of dummy variables for each distinct value of g and a vector of interactions between these dummies and x (perhaps suppressing the intercept to avoid interpreting with respect to a reference group). This approach is convenient, but suffers from a number of drawacks. Most importantly, Stata does not allow the direct estimation of more than 10,998 parameters simultaneously, which in this case means that this one-step estimator can only be computed when there are fewer than 5,500 groups. Second, it turns out that directly estimating thousands of parameters is quite slow.
 
-If the number of groups is relatively large, an alternative strategy is to estimate the regression model separately within each group. There are at least two easy ways to do this in Stata, either by manually iterating over groups or by using the built-in -statsby- function. Unfortunately, both of these methods are also excruciatingly slow when the number of groups is large.
+If the number of groups is relatively large, an alternative strategy is to estimate a univariate regression of y on x separately within each group g. There are at least two easy ways to do this in Stata, either by manually iterating over groups or by using the built-in -statsby- function. Unfortunately, both of these methods are excruciatingly slow when the number of groups is large.
 
-Regressby is intended primarily as a replacement for -statsby-. In my use cases, this program has been hundreds of times faster than -statsby-, reducing the runtime of scripts that would previously take days or weeks into less than an hour.
+Regressby is intended primarily as a replacement for these built-in methods. In my use cases, this program has been hundreds of times faster than -statsby-, reducing the runtime of scripts that would previously take days or weeks into less than an hour.
 
 
 Installation
@@ -41,11 +41,10 @@ Installation
 
 There are two options for installing regressby.
 
-1. The most recent version can be installed from Github with the following Stata commands:
+1. The most recent version can be installed from Github with the following Stata command:
 
 ```stata
-local github "https://raw.githubusercontent.com"
-net install regressby, from(`github'/mdroste/stata-regressby/master/)
+net install regressby, from(https://raw.githubusercontent.com/mdroste/stata-regressby/master/)
 ```
 
 2. A ZIP containing the program can be downloaded and manually placed on the user's adopath from Github.
@@ -75,8 +74,7 @@ Todo
 
 The following items will be addressed soon:
 
-- [ ] Finish off this readme.md
-- [x] Provide a help file
+- [ ] Finish off this readme.md and the help file
 - [ ] Finish benchmarking
 - [ ] Provide script to validate results / example datasets
 
@@ -86,7 +84,7 @@ Porting this program into a compiled C plugin for Stata would yield a significan
 Acknowledgements
 ---------------------------------
 
-This program is based off of internal code from the illustrious Michael Stepner's health inequality project. This program also benefited from contributions provided by the inimitable Dr. Wilbur Townsend, who helped elegantly generalize the code to allow for an arbitrary number of regressors. Finally, this program benefited greatly from the guidance and advice of Raj Chetty.
+This program is based off of internal code from the illustrious [Michael Stepner](https://github.com/michaelstepner)'s health inequality project. This program also benefited from contributions provided by the inimitable Dr. [Wilbur Townsend](https://github.com/wilbur-t), who helped elegantly generalize the code to allow for an arbitrary number of regressors. Finally, this program benefited greatly from the guidance and advice of Raj Chetty.
 
 
 License
