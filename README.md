@@ -18,9 +18,9 @@ Flexible and hyper-fast grouped regressions in Stata
 Overview
 ---------------------------------
 
-regressby is a fast and efficient method to run grouped regressions; that is, it runs the same regression model on each subset partitioning your dataset and returns to you the coefficients. Functionally, this makes it very similar to the built-in -statsby- program, however, -regressby runs between 10 and 500 times faster than -statsby- in most use cases. These benefits are particularly large when there are many groups, when the number observations in each group is relatively small, and when the regression model only contains a few parameters.
+regressby is a fast and efficient method to run grouped regressions; that is, it runs the same regression model on subsets of your data (indexed by the set of variables G) and returns to you the coefficients and standard errors associated with each regression. Functionally, this makes it very similar to the built-in -statsby- program, however, -regressby- runs between 10 and 1000 times faster than -statsby- in most use cases. The performance increases are particularly large when there are many groups, when the number observations in each group is relatively small, and when the regression model only contains a few parameters.
 
-Regressby supports robust and clustered standard errors, and also supports analytical weights.
+regressby supports a number of useful bells and whistles: subsetting with if/in, analytical weights, heteroskedasticity-robust and clustered standard errors. Furthermore, unlike statsby, regressby allows the user to access to the full variance-covariance matrix by returning the sampling covariance of each estimated parameter.
 
 
 Installation
@@ -68,10 +68,11 @@ Todo
 The following items will be addressed soon:
 
 - [ ] Finish off this readme.md
-- [ ] Provide a help file
-- [ ] Finish benchmarking and provide a script to validate results
+- [x] Provide a help file
+- [ ] Finish benchmarking
+- [ ] Provide script to validate results / example datasets
 
-A port of this program in C would yield a significant increase in performance; I have no plans to do that in the near future.
+Porting this program into a compiled C plugin for Stata would yield a significant increase in performance; I have no plans to do that in the near future.
 
 
 Acknowledgements
