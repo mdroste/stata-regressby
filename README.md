@@ -19,9 +19,9 @@ Flexible and hyper-fast grouped regressions in Stata
 Overview
 ---------------------------------
 
-regressby is a fast and efficient method to run grouped regressions; that is, it runs the same regression model on subsets of your data (indexed by the set of variables G) and returns to you the coefficients and standard errors associated with each regression. Functionally, this makes it very similar to the built-in -statsby- program, however, -regressby- runs between 10 and 1000 times faster than -statsby- in most use cases. The performance increases are particularly large when there are many groups, when the number observations in each group is relatively small, and when the regression model only contains a few parameters.
+regressby is a fast and efficient method to run grouped OLS regressions; that is, it estimates a given OLS regression model on a collection of subsets of your dataset, returning the coefficients and standard errors associated with each regression. Functionally, it is very similar to the built-in -statsby- program, however, -regressby- runs between 10 and 1000 times faster than -statsby- in most use cases. The performance increases are particularly large when there are many groups, when the number observations in each group is relatively small, and when the regression model only contains a few parameters.
 
-regressby supports a number of useful bells and whistles: subsetting with if/in, analytical weights, heteroskedasticity-robust and clustered standard errors. Furthermore, unlike statsby, regressby allows the user to access to the full variance-covariance matrix by returning the sampling covariance of each estimated parameter.
+regressby supports a number of useful bells and whistles: subsetting with if/in, analytical weights, heteroskedasticity-robust and clustered standard errors. Furthermore, unlike statsby, regressby (optionally) allows users to access to the full variance-covariance matrix associated with each regression by returning the sampling covariance associated with each pair of estimated parameters.
 
 
 Motivation
