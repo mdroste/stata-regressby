@@ -1,0 +1,8 @@
+v 0.5
+d
+d 'regressby': fast and flexible grouped regressions
+d
+d Distribution-Date: 20180724
+d
+f regressby.ado
+f regressby.sthlp
