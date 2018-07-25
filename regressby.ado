@@ -100,12 +100,24 @@ program define regressby
 	qui drop if mi(`grp')
 	
 	* Drop observations missing independent or dependent variables
+	* Also count number of variables here including constant, awkward and should be replaced
+	local num_x = 0
 	foreach v in `varlist'{
 		qui drop if mi(`v')
+		local num_x = `num_x' + 1
+	}
+	local num_x = `num_x' - 1
+	if "`nocons'"=="" local num_x = `num_x' + 1
+
+	* Drop observations missing weight, if weights are specified
+	if "`weightby'"!="" {
+		drop if `weightby'==.
 	}
 
 	* XX Drop groups if num obs < parameters
-	
+	tempvar nobs
+	by `by': gen `nobs' = _N
+	drop if `nobs' < `num_x'
 
 	* Perform regressions on each by-group, store in dataset
 	mata: _regressby("`varlist'", "`grp'", "`bynumeric'","`clusterby'","`robust'","`weightby'")

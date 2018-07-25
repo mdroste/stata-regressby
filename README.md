@@ -41,11 +41,10 @@ Installation
 
 There are two options for installing regressby.
 
-1. The most recent version can be installed from Github with the following Stata commands:
+1. The most recent version can be installed from Github with the following Stata command:
 
 ```stata
-local github "https://raw.githubusercontent.com"
-net install regressby, from(`github'/mdroste/stata-regressby/master/)
+net install regressby, from(https://raw.githubusercontent.com/mdroste/stata-regressby/master/)
 ```
 
 2. A ZIP containing the program can be downloaded and manually placed on the user's adopath from Github.
