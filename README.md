@@ -77,6 +77,7 @@ The following items will be addressed soon:
 - [ ] Finish off this readme.md and the help file
 - [ ] Finish benchmarking
 - [ ] Provide script to validate results / example datasets
+- [ ] Add support for frequency weights
 
 Porting this program into a compiled C plugin for Stata would yield a significant increase in performance; I have no plans to do that in the near future.
 
