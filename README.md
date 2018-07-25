@@ -3,6 +3,7 @@ regressby
 =================================
 
 [Overview](#overview)
+| [Motivation](#motivation)
 | [Installation](#installation)
 | [Usage](#usage)
 | [Benchmarks](#benchmarks)
@@ -23,6 +24,18 @@ regressby is a fast and efficient method to run grouped regressions; that is, it
 regressby supports a number of useful bells and whistles: subsetting with if/in, analytical weights, heteroskedasticity-robust and clustered standard errors. Furthermore, unlike statsby, regressby allows the user to access to the full variance-covariance matrix by returning the sampling covariance of each estimated parameter.
 
 
+Motivation
+---------------------------------
+
+It is easiest to describe how regressby functions by way of example. Suppose you want to estimate a regression describing the relationship between a person's income, y, and their parent's income, x. Also suppose that you have a variable g that describes each person's place of birth (say, each value of g represents a county in the United States), and you would like to obtain slopes and intercepts separately for each county in the United States (as in Chetty and Hendren, 2014). 
+
+You can accomplish this in one step by regressing y on a vector of dummy variables for each distinct value of g and a vector of interactions between these dummies and x. This approach is convenient, but suffers from a number of drawacks. Most importantly, Stata does not allow the direct estimation of more than 10,998 parameters simultaneously, which in this case means that this one-step estimator can only be computed when there are fewer than 5,500 groups. Second, it turns out that directly estimating thousands of parameters is quite slow.
+
+If the number of groups is relatively large, an alternative strategy is to estimate the regression model separately within each group. There are at least two easy ways to do this in Stata, either by manually iterating over groups or by using the built-in -statsby- function. Unfortunately, both of these methods are also excruciatingly slow when the number of groups is large.
+
+Regressby is intended primarily as a replacement for -statsby-. In my use cases, this program has been hundreds of times faster than -statsby-, reducing the runtime of scripts that would previously take days or weeks into less than an hour.
+
+
 Installation
 ---------------------------------
 
@@ -38,29 +51,24 @@ net install regressby, from(`github'/mdroste/stata-regressby/master/)
 2. A ZIP containing the program can be downloaded and manually placed on the user's adopath from Github.
 
 
-Motivating Example
+Usage
 ---------------------------------
-
-It is easiest to describe how regressby functions by way of example. Suppose you want to estimate a regression describing the relationship between a person's income, y, and their parent's income, x. Also suppose that you have a variable g that describes each person's place of birth (say, each value of g represents a county in the United States), and you would like to obtain slopes and intercepts separately for each county in the United States (as in Chetty and Hendren, 2014). 
-
-You can accomplish this in one step by regressing y on a vector of dummy variables for each distinct value of g and a vector of interactions between these dummies and x. This is convenient, but potentially undesirable for a few reasons. For one, Stata isn't going to allow you to include more than 10,998 independent variables in your regression, so if you are interested in estimating group-specific slopes and intercepts, then you can only do this with fewer than 5,500 groups. Because there are only about 3,000 counties in the United States, it is feasible to perform this one-step estimation in Stata. However, it turns out that directly estimating thousands of parameters in an OLS regression simultaneously is quite slow in Stata.
-
-An alternative estimatin strategy - and the only one that is feasible in a context where you have tens of thousands of distinct groups - is to estimate a separate regression of y on x for each distinct value of g. There are at least two easy ways to do this in Stata, either by manually iterating over values of groups or by using the built-in -statsby- function. However, both of these methods are also excruciatingly slow. Although it is very hard to beat Stata's built-in -regress- performance for a single regression, it can be very inefficient when running many identical regressions on subsets of your data.
 
 The following two commands are equivalent:
 
-``` 
+```stata
 regressby y x, by(byvars)
 statsby, by(byvars) clear: reg y x	
 ```
 
+More on this soon. See the help file in Stata.
 
 
 Benchmarks
 ---------------------------------
 
-
 ![regressby benchmark](benchmarks/regressby_benchmark.png "regressby benchmark")
+
   
 Todo
 ---------------------------------
