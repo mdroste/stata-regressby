@@ -114,10 +114,8 @@ program define regressby
 		drop if `weightby'==.
 	}
 
-	* XX Drop groups if num obs < parameters
-	tempvar nobs
-	by `by': gen `nobs' = _N
-	drop if `nobs' < `num_x'
+	* XX revisit this later to handle missing data
+	
 
 	* Perform regressions on each by-group, store in dataset
 	mata: _regressby("`varlist'", "`grp'", "`bynumeric'","`clusterby'","`robust'","`weightby'")

@@ -92,4 +92,3 @@ License
 ---------------------------------
 
 regressby is [MIT-licensed](https://github.com/mdroste/stata-regressby/blob/master/LICENSE).
-
