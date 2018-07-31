@@ -66,7 +66,20 @@ see {help weight}.
 {marker examples}{...}
 {title:Examples}
  
-{pstd}See the Github page.{p_end}
+{marker example1}{...}
+{pstd}{bf:Example 1}
+
+{pstd}Load the auto example dataset.{p_end}
+{phang2}. {stata sysuse auto, clear}{p_end}
+
+{pstd}Regress price on mpg within each value of foreign.{p_end}
+{phang2}. {stata regressby price mpg, by(foreign)}{p_end}
+
+{pstd}Examine the data.{p_end}
+{phang2}. {stata list}{p_end}
+
+
+{pstd}{p_end}
  
 {marker author}{...}
 {title:Author}
