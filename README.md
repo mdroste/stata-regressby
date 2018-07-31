@@ -13,7 +13,7 @@ regressby
 
 Flexible and hyper-fast grouped regressions in Stata
 
-`version 0.5 24jul2018`
+`version 0.51 31jul2018`
 
 
 Overview

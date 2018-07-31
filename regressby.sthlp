@@ -1,5 +1,5 @@
 {smcl}
-{* *! version 0.5  24jul2018}{...}
+{* *! version 0.51  31jul2018}{...}
 {viewerjumpto "Syntax" "regressby##syntax"}{...}
 {viewerjumpto "Description" "regressby##description"}{...}
 {viewerjumpto "Options" "regressby##options"}{...}
