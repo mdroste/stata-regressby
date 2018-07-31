@@ -78,6 +78,18 @@ see {help weight}.
 {pstd}Examine the data.{p_end}
 {phang2}. {stata list}{p_end}
 
+{marker example1}{...}
+{pstd}{bf:Example 2}
+
+{pstd}Load the life expectancy by country example dataset.{p_end}
+{phang2}. {stata sysuse lifeexp, clear}{p_end}
+
+{pstd}Regress life expectancy on per-capita GDP within region, saving out to output.dta in the working directory.{p_end}
+{phang2}. {stata regressby lexp gnppc, by(region) save(output.dta)}{p_end}
+
+{pstd}Examine the data.{p_end}
+{phang2}. {stata list}{p_end}
+
 
 {pstd}{p_end}
  
