@@ -87,7 +87,7 @@ program define regressby
 			tempvar `var'N
 			encode `var', gen(``var'N')
 			local bynumeric `bynumeric' ``var'N'
-			local bystr `var'  // list of string by-vars
+			local bystr `bystr' `var'  // list of string by-vars
 		}
 	}
 	
